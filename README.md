@@ -2,6 +2,8 @@
 
 A comprehensive Learning Management System designed for digital literacy education, specifically targeting Grades 4-9 (ages 9-16) in rural South African communities. The system implements a 3-station lesson model: Computational Thinking, Typing, and Purposeful Gaming.
 
+![Application Screenshot](Screenshot.PNG)
+
 ## Features
 
 ### User Roles

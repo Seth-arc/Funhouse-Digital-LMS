@@ -187,6 +187,68 @@ router.post('/learner-login', async (req, res) => {
   }
 });
 
+// Learner preview token (Tutor only, read-only session)
+router.post('/learner-preview', authenticate, requireRole('tutor'), async (req: AuthRequest, res) => {
+  try {
+    const studentId = typeof req.body?.student_id === 'string' ? req.body.student_id.trim() : '';
+    if (!studentId) {
+      return res.status(400).json({ error: 'student_id is required' });
+    }
+
+    const db = getDb();
+    const student = await get(
+      db,
+      'SELECT id, name, grade, age FROM students WHERE id = ?',
+      [studentId]
+    ) as { id: string; name: string; grade: number; age: number } | undefined;
+
+    if (!student) {
+      return res.status(404).json({ error: 'Learner not found' });
+    }
+
+    const previewExpiry = '1h';
+    const token = jwt.sign(
+      {
+        studentId: student.id,
+        role: 'learner',
+        preview: true,
+        impersonatedBy: req.userId,
+      },
+      JWT_SECRET,
+      { expiresIn: previewExpiry }
+    );
+
+    await writeAuditLog({
+      actorUserId: req.userId || null,
+      actorRole: req.userRole || null,
+      action: 'learner.preview.start',
+      targetType: 'student',
+      targetId: student.id,
+      metadata: {
+        student_name: student.name,
+        read_only: true,
+        expires_in: previewExpiry,
+      },
+    });
+
+    res.json({
+      token,
+      learner: {
+        id: student.id,
+        name: student.name,
+        grade: student.grade,
+        age: student.age,
+      },
+      preview: {
+        read_only: true,
+        expires_in: previewExpiry,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Create invite (Tutor only)
 router.post('/invite', authenticate, requireRole('tutor'), async (req: AuthRequest, res) => {
   try {

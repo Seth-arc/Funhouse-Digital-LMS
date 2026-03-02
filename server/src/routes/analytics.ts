@@ -12,6 +12,7 @@ interface DecodedActorToken {
   userId?: string;
   studentId?: string;
   role?: string;
+  preview?: boolean;
 }
 
 type StationCategory = 'computational_thinking' | 'typing' | 'purposeful_gaming';
@@ -179,6 +180,14 @@ router.post('/event', async (req, res) => {
     }
 
     const actor = getActorFromAuthorization(req.headers.authorization);
+    if (actor.role === 'learner' && actor.preview === true) {
+      return res.status(202).json({
+        recorded: false,
+        skipped: true,
+        reason: 'learner_preview_session',
+      });
+    }
+
     const resolvedRole = actor.role || bodyRole || 'anonymous';
     const userId = actor.userId || null;
     const studentId = actor.studentId || null;

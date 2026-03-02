@@ -8,6 +8,8 @@ export interface AuthRequest extends Request {
   userId?: string;
   userRole?: string;
   studentId?: string;
+  isPreviewSession?: boolean;
+  impersonatedByUserId?: string;
 }
 
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -22,6 +24,8 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
       userId?: string;
       studentId?: string;
       role: string;
+      preview?: boolean;
+      impersonatedBy?: string;
     };
 
     if (decoded.role === 'learner') {
@@ -30,6 +34,11 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
       }
       req.studentId = decoded.studentId;
       req.userRole = 'learner';
+      req.isPreviewSession = decoded.preview === true;
+      req.impersonatedByUserId =
+        typeof decoded.impersonatedBy === 'string' && decoded.impersonatedBy.trim()
+          ? decoded.impersonatedBy.trim()
+          : undefined;
       next();
       return;
     }
@@ -40,6 +49,8 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
     req.userId = decoded.userId;
     req.userRole = decoded.role;
+    req.isPreviewSession = false;
+    req.impersonatedByUserId = undefined;
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });

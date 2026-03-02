@@ -227,6 +227,10 @@ router.get('/interventions', authenticate, async (req: AuthRequest, res) => {
 // Record progress (authenticated)
 router.post('/', authenticate, async (req: AuthRequest, res) => {
   try {
+    if (req.userRole === 'learner' && req.isPreviewSession) {
+      return res.status(403).json({ error: 'Learner preview mode is read-only. Progress is not recorded.' });
+    }
+
     const studentId = typeof req.body?.student_id === 'string' ? req.body.student_id.trim() : '';
     const gameId = typeof req.body?.game_id === 'string' ? req.body.game_id.trim() : '';
     const lessonId = typeof req.body?.lesson_id === 'string' && req.body.lesson_id.trim() ? req.body.lesson_id.trim() : null;

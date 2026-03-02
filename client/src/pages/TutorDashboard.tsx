@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
@@ -14,6 +15,8 @@ import {
 import './Dashboard.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const LEARNER_TOKEN_KEY = 'learner_token';
+const LEARNER_PROFILE_KEY = 'learner_profile';
 const TUTOR_FILTERS_KEY = 'fd_tutor_filters_v1';
 const TUTOR_ONBOARDING_KEY = 'fd_onboarding_tutor_v1';
 const TUTOR_STUDENT_DRAFT_KEY = 'fd_tutor_draft_student_v1';
@@ -81,6 +84,20 @@ interface Student {
   parent_id?: string;
   teacher_id?: string;
   school_id?: string;
+}
+
+interface LearnerPreviewResponse {
+  token: string;
+  learner: {
+    id: string;
+    name: string;
+    grade: number;
+    age: number;
+  };
+  preview?: {
+    read_only?: boolean;
+    expires_in?: string;
+  };
 }
 
 interface Game {
@@ -419,6 +436,7 @@ const readFileAsDataUrl = (file: File): Promise<string> =>
 
 const TutorDashboard: React.FC = () => {
   const { user, logout, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [showOnboardingTip, setShowOnboardingTip] = useState(() => localStorage.getItem(TUTOR_ONBOARDING_KEY) !== 'dismissed');
   const [students, setStudents] = useState<Student[]>([]);
   const [games, setGames] = useState<Game[]>([]);
@@ -436,6 +454,7 @@ const TutorDashboard: React.FC = () => {
   const [showTeacherModal, setShowTeacherModal] = useState(false);
   const [showParentModal, setShowParentModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [previewLaunchingStudentId, setPreviewLaunchingStudentId] = useState<string | null>(null);
   const [seeding, setSeeding] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('lessons');
 
@@ -1313,6 +1332,45 @@ const TutorDashboard: React.FC = () => {
 
   const closeNoticeDialog = () => {
     setNoticeDialog(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const handlePreviewLearner = async (student: Student) => {
+    setPreviewLaunchingStudentId(student.id);
+    try {
+      const response = await axios.post<LearnerPreviewResponse>(`${API_URL}/auth/learner-preview`, {
+        student_id: student.id,
+      });
+
+      const token = response.data?.token;
+      const learner = response.data?.learner;
+      if (!token || !learner?.id) {
+        throw new Error('Could not start learner preview.');
+      }
+
+      localStorage.setItem(LEARNER_TOKEN_KEY, token);
+      localStorage.setItem(
+        LEARNER_PROFILE_KEY,
+        JSON.stringify({
+          id: learner.id,
+          name: learner.name,
+          grade: learner.grade,
+          age: learner.age,
+          preview_mode: true,
+          read_only: true,
+          launched_by_name: user?.name || null,
+          launched_at: new Date().toISOString(),
+        })
+      );
+
+      navigate(`/learner/${learner.id}`);
+    } catch (error: any) {
+      showNoticeDialog(error.response?.data?.error || error.message || 'Failed to start learner preview', {
+        title: 'Could Not Open Learner Preview',
+        tone: 'danger',
+      });
+    } finally {
+      setPreviewLaunchingStudentId(null);
+    }
   };
 
   useEffect(() => () => {

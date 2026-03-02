@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import TutorDashboard from './pages/TutorDashboard';
+import TutorFeedbackPage from './pages/TutorFeedbackPage';
 import TeacherDashboard from './pages/TeacherDashboard';
 import ParentDashboard from './pages/ParentDashboard';
 import LearnerDashboard from './pages/LearnerDashboard';
@@ -11,6 +12,18 @@ import SplashScreen from './components/SplashScreen';
 import FeedbackWidget from './components/FeedbackWidget';
 import { flushOfflineQueue, getOfflineQueueSize, onOfflineQueueChange } from './network';
 import './App.css';
+
+const getRouterBasename = (): string | undefined => {
+  const rawPublicUrl = process.env.PUBLIC_URL || '';
+  if (!rawPublicUrl || rawPublicUrl === '/') return undefined;
+
+  try {
+    const parsed = new URL(rawPublicUrl);
+    return parsed.pathname || undefined;
+  } catch {
+    return rawPublicUrl;
+  }
+};
 
 interface NetworkStatusBannerProps {
   isOnline: boolean;
@@ -45,6 +58,7 @@ const NetworkStatusBanner: React.FC<NetworkStatusBannerProps> = ({
 };
 
 function App() {
+  const routerBasename = getRouterBasename();
   const [splashComplete, setSplashComplete] = useState(false);
   const [isOnline, setIsOnline] = useState(() => (typeof navigator === 'undefined' ? true : navigator.onLine));
   const [queuedRequestCount, setQueuedRequestCount] = useState(() => getOfflineQueueSize());
@@ -103,7 +117,7 @@ function App() {
   return (
     <AuthProvider>
       <div className="app">
-        <Router>
+        <Router basename={routerBasename}>
           <NetworkStatusBanner
             isOnline={isOnline}
             queuedRequestCount={queuedRequestCount}
@@ -118,6 +132,14 @@ function App() {
               element={
                 <PrivateRoute requiredRole="tutor">
                   <TutorDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tutor/feedback"
+              element={
+                <PrivateRoute requiredRole="tutor">
+                  <TutorFeedbackPage />
                 </PrivateRoute>
               }
             />

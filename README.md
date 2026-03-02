@@ -6,12 +6,14 @@ A comprehensive Learning Management System designed for digital literacy educati
 
 ## GitHub Page
 
-This repo includes a static project page source in `site/` and an automated deploy workflow at `.github/workflows/deploy-pages.yml`.
+This repo includes an automated GitHub Pages workflow at `.github/workflows/deploy-pages.yml` that builds and deploys the actual React frontend from `client/`.
 
 1. Push these changes to your GitHub repository.
 2. In GitHub, go to **Settings -> Pages** and set **Source** to **GitHub Actions**.
-3. The workflow deploys the page on pushes to `main` or `master`.
-4. Your site URL will be:
+3. In **Settings -> Secrets and variables -> Actions -> Variables**, add:
+   - `REACT_APP_API_URL` = your deployed backend API base URL (for example, your Railway URL ending in `/api`).
+4. The workflow deploys the React app on pushes to `main` or `master`.
+5. Your site URL will be:
    - `https://<your-github-username>.github.io/<repo-name>/`
 
 ## Features

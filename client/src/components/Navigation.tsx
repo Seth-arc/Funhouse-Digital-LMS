@@ -83,14 +83,19 @@ const Navigation: React.FC = () => {
       </div>
       <div className="nav-links">
         {user.role === 'tutor' && (
-          <button onClick={() => handleViewSwitch('tutor')} className="nav-link nav-link-with-badge">
-            <span>Tutor Dashboard</span>
-            {reminderCount > 0 && (
-              <span className="nav-reminder-badge" aria-label={`${reminderCount} upcoming reminders`} title={`${reminderCount} upcoming reminders`}>
-                {reminderLabel}
-              </span>
-            )}
-          </button>
+          <>
+            <button onClick={() => handleViewSwitch('tutor')} className="nav-link nav-link-with-badge">
+              <span>Tutor Dashboard</span>
+              {reminderCount > 0 && (
+                <span className="nav-reminder-badge" aria-label={`${reminderCount} upcoming reminders`} title={`${reminderCount} upcoming reminders`}>
+                  {reminderLabel}
+                </span>
+              )}
+            </button>
+            <button onClick={() => handleViewSwitch('tutor/feedback')} className="nav-link">
+              Feedback Inbox
+            </button>
+          </>
         )}
         {user.role === 'teacher' && (
           <button onClick={() => handleViewSwitch('teacher')} className="nav-link nav-link-with-badge">

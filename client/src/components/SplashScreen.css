@@ -1,0 +1,229 @@
+/* ───────────────────────────────────────────────────────────────
+   Splash Screen
+   Full-screen intro that displays before the login page.
+   Dark canvas with azure glow — mirrors the login aesthetic.
+──────────────────────────────────────────────────────────────── */
+
+.splash-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-canvas-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.splash-root.splash-leaving {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.splash-root.splash-fast {
+  transition: opacity 0.18s ease;
+}
+
+.splash-fast .splash-word,
+.splash-fast .splash-tagline {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Ambient glow orbs ───────────────────────────────────────── */
+.splash-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0;
+  animation: splashGlowIn 0.8s 0.1s var(--ease-out) forwards;
+}
+
+.splash-glow--top {
+  width: 600px;
+  height: 400px;
+  top: -10%;
+  right: 5%;
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.18) 0%, transparent 70%);
+}
+
+.splash-glow--bottom {
+  width: 500px;
+  height: 350px;
+  bottom: -5%;
+  left: -5%;
+  background: radial-gradient(circle, rgba(3, 105, 161, 0.12) 0%, transparent 70%);
+  animation-delay: 0.2s;
+}
+
+@keyframes splashGlowIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Main content ────────────────────────────────────────────── */
+.splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Wordmark ────────────────────────────────────────────────── */
+.splash-wordmark {
+  display: flex;
+  gap: 0;
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin: 0 0 0.75rem;
+  line-height: 1.1;
+}
+
+.splash-word {
+  opacity: 0;
+  transform: translateY(8px);
+  display: inline-block;
+  animation: splashWordIn 0.45s var(--ease-out) forwards;
+}
+
+.splash-word--1 {
+  animation-delay: 0.45s;
+}
+
+.splash-word--2 {
+  animation-delay: 0.58s;
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes splashWordIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Tagline ─────────────────────────────────────────────────── */
+.splash-tagline {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0;
+  opacity: 0;
+  animation: splashWordIn 0.4s 0.75s var(--ease-out) forwards;
+}
+
+/* ── Progress bar ────────────────────────────────────────────── */
+.splash-bar-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  transition: opacity 0.5s ease;
+}
+
+.splash-bar--hidden {
+  opacity: 0;
+}
+
+.splash-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg,
+      rgba(2, 132, 199, 0.6),
+      rgba(125, 211, 252, 0.9),
+      rgba(2, 132, 199, 0.6));
+  background-size: 200% 100%;
+  animation:
+    splashBarFill 1.8s 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+    splashBarSheen 1.5s 0.4s linear infinite;
+}
+
+@keyframes splashBarFill {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes splashBarSheen {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* ── Continue Arrow ──────────────────────────────────────────── */
+.splash-continue {
+  position: absolute;
+  bottom: 12%;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.splash-continue--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.splash-arrow-btn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  animation: bounceArrow 2.5s infinite ease-in-out;
+}
+
+.splash-arrow-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+  animation-play-state: paused;
+}
+
+@keyframes bounceArrow {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}

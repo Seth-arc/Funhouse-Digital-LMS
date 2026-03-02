@@ -1,0 +1,154 @@
+/* ───────────────────────────────────────────────────────────────
+   Learner Splash / Loading Screen
+   A fun, bouncy loading screen specifically for students.
+──────────────────────────────────────────────────────────────── */
+
+.learner-splash-root {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--color-canvas-dark);
+    background-image: radial-gradient(circle at 50% 120%, rgba(2, 132, 199, 0.2) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    transform-origin: center top;
+}
+
+.learner-splash-leaving {
+    opacity: 0;
+    transform: translateY(-5%) scale(0.98);
+    pointer-events: none;
+}
+
+.learner-splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Bouncing emojis ─────────────────────────────────────────── */
+.emoji-bouncer {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.emoji-orb {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    animation: bounceOrb 0.6s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
+    transform-origin: bottom center;
+}
+
+.orb-1 {
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    animation-delay: 0.15s;
+}
+
+.orb-3 {
+    animation-delay: 0.3s;
+}
+
+@keyframes bounceOrb {
+    from {
+        transform: translateY(0) scaleY(0.9);
+    }
+
+    to {
+        transform: translateY(-40px) scaleY(1.05);
+    }
+}
+
+/* ── Typography ──────────────────────────────────────────────── */
+.learner-splash-wordmark {
+    display: flex;
+    gap: 0;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin: 0;
+    line-height: 1.1;
+    animation: pulseTitle 2.5s infinite ease-in-out;
+}
+
+.learner-splash-wordmark__main {
+    color: #fff;
+}
+
+.learner-splash-wordmark__accent {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@keyframes pulseTitle {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ── Progress Track ──────────────────────────────────────────── */
+.learner-splash-track {
+    width: 240px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    margin-top: var(--spacing-sm);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.learner-splash-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary));
+    border-radius: var(--radius-full);
+    animation:
+        fillBar 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+        stripes 1s linear infinite;
+    background-size: 200% 100%;
+}
+
+@keyframes fillBar {
+    0% {
+        width: 0%;
+    }
+
+    40% {
+        width: 60%;
+    }
+
+    80% {
+        width: 85%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes stripes {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}

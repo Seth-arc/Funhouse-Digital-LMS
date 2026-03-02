@@ -1,0 +1,80 @@
+.onboarding-modal {
+  z-index: 1400;
+}
+
+.onboarding-modal-content {
+  max-width: 620px;
+}
+
+.onboarding-modal-header {
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.onboarding-modal-header p {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.onboarding-modal-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.onboarding-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+.onboarding-step-dot.active {
+  background: var(--color-primary);
+}
+
+.onboarding-step-dot.done {
+  background: var(--color-success);
+}
+
+.onboarding-modal-body {
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.onboarding-step-label {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  font-weight: var(--font-weight-semibold);
+}
+
+.onboarding-modal-body h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+}
+
+.onboarding-modal-body p {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.onboarding-modal-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .onboarding-modal-content {
+    max-width: 100%;
+  }
+}

@@ -55,6 +55,7 @@ jobs:
         env:
           PUBLIC_URL: ${{ steps.public_path.outputs.path }}
           REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+          CI: false
         run: |
           npm ci
           npm run build

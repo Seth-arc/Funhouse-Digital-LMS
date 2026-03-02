@@ -291,8 +291,8 @@ const Login: React.FC = () => {
               ))}
             </div>
 
-            <form className="manual-login" onSubmit={handleStaffSubmit} noValidate hidden aria-hidden="true">
-              <p className="manual-login-title">Or sign in with email and password</p>
+            <form className="manual-login" onSubmit={handleStaffSubmit} noValidate>
+              <p className="manual-login-title">Sign in with email and password</p>
               <div className="form-group">
                 <label htmlFor="staff-email">Email</label>
                 <input

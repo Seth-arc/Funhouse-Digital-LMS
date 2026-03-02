@@ -3644,6 +3644,15 @@ const TutorDashboard: React.FC = () => {
                           </button>
                           <button
                             className="btn btn-secondary btn-sm"
+                            onClick={() => {
+                              void handlePreviewLearner(student);
+                            }}
+                            disabled={previewLaunchingStudentId === student.id}
+                          >
+                            {previewLaunchingStudentId === student.id ? 'Opening...' : 'Preview'}
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
                             style={{ color: 'var(--color-error)' }}
                             onClick={() => handleDeleteStudent(student)}
                           >

@@ -21,6 +21,17 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 const LEARNER_TOKEN_KEY = 'learner_token';
 const LEARNER_PROFILE_KEY = 'learner_profile';
 
+interface LearnerProfile {
+  id?: string;
+  name?: string;
+  grade?: number;
+  age?: number;
+  preview_mode?: boolean;
+  read_only?: boolean;
+  launched_by_name?: string | null;
+  launched_at?: string;
+}
+
 interface Student {
   id: string;
   name: string;
@@ -83,6 +94,9 @@ const LearnerDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [previewLaunchedBy, setPreviewLaunchedBy] = useState<string>('');
+  const [previewNotice, setPreviewNotice] = useState<string>('');
   const [activeSidebarSection, setActiveSidebarSection] = useState<LearnerSectionId>('lessons');
 
   /* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ Data ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
@@ -99,15 +113,23 @@ const LearnerDashboard: React.FC = () => {
     const learnerProfileRaw = localStorage.getItem(LEARNER_PROFILE_KEY);
     if (learnerProfileRaw) {
       try {
-        const learnerProfile = JSON.parse(learnerProfileRaw) as { id?: string };
+        const learnerProfile = JSON.parse(learnerProfileRaw) as LearnerProfile;
         if (learnerProfile.id && learnerProfile.id !== studentId) {
           setAuthError('This dashboard belongs to a different learner. Please sign in again.');
           setLoading(false);
           return;
         }
+        const previewMode = learnerProfile.preview_mode === true;
+        setIsPreviewMode(previewMode);
+        setPreviewLaunchedBy(previewMode ? (learnerProfile.launched_by_name || '') : '');
       } catch {
         localStorage.removeItem(LEARNER_PROFILE_KEY);
+        setIsPreviewMode(false);
+        setPreviewLaunchedBy('');
       }
+    } else {
+      setIsPreviewMode(false);
+      setPreviewLaunchedBy('');
     }
 
     const authConfig = {
@@ -161,6 +183,14 @@ const LearnerDashboard: React.FC = () => {
 
   /* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ Game complete handler ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
   const handleGameComplete = async (gameId: string, score: number, timeSpent: number) => {
+    if (isPreviewMode) {
+      setPreviewNotice('Preview mode is read-only. Progress and analytics are not recorded.');
+      setSelectedGame(null);
+      setSelectedLesson(null);
+      setSelectedStation(null);
+      return;
+    }
+
     const learnerToken = localStorage.getItem(LEARNER_TOKEN_KEY);
     if (!learnerToken) {
       setAuthError('Please sign in as a learner to save progress.');
@@ -218,6 +248,13 @@ const LearnerDashboard: React.FC = () => {
     } catch (err) {
       console.error('Progress save error:', err);
       if (axios.isAxiosError(err) && (err.response?.status === 401 || err.response?.status === 403)) {
+        if (err.response?.status === 403) {
+          setPreviewNotice(err.response?.data?.error || 'Preview mode is read-only.');
+          setSelectedGame(null);
+          setSelectedLesson(null);
+          setSelectedStation(null);
+          return;
+        }
         localStorage.removeItem(LEARNER_TOKEN_KEY);
         localStorage.removeItem(LEARNER_PROFILE_KEY);
         setAuthError('Session expired while saving progress. Please sign in again.');
@@ -226,12 +263,24 @@ const LearnerDashboard: React.FC = () => {
   };
 
   const switchLearner = () => {
+    if (isPreviewMode) {
+      localStorage.removeItem(LEARNER_TOKEN_KEY);
+      localStorage.removeItem(LEARNER_PROFILE_KEY);
+      navigate('/tutor');
+      return;
+    }
     localStorage.removeItem(LEARNER_TOKEN_KEY);
     localStorage.removeItem(LEARNER_PROFILE_KEY);
     navigate('/login?student=1');
   };
 
   const exitLearner = () => {
+    if (isPreviewMode) {
+      localStorage.removeItem(LEARNER_TOKEN_KEY);
+      localStorage.removeItem(LEARNER_PROFILE_KEY);
+      navigate('/tutor');
+      return;
+    }
     localStorage.removeItem(LEARNER_TOKEN_KEY);
     localStorage.removeItem(LEARNER_PROFILE_KEY);
     if (typeof window !== 'undefined') {
@@ -254,7 +303,7 @@ const LearnerDashboard: React.FC = () => {
       <div className="learner-loading">
         <p>{authError}</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={switchLearner}>
-          Return to learner sign in
+          {isPreviewMode ? 'Return to tutor dashboard' : 'Return to learner sign in'}
         </button>
       </div>
     );
@@ -304,19 +353,27 @@ const LearnerDashboard: React.FC = () => {
             <button
               className="learner-switch-btn"
               onClick={switchLearner}
-              aria-label="Switch student"
+              aria-label={isPreviewMode ? 'Return to tutor dashboard' : 'Switch student'}
             >
-              Switch Student
+              {isPreviewMode ? 'Back to Tutor' : 'Switch Student'}
             </button>
-            <button
-              className="learner-exit-btn"
-              onClick={exitLearner}
-              aria-label="Exit learner dashboard"
-            >
-              Exit
-            </button>
+            {!isPreviewMode && (
+              <button
+                className="learner-exit-btn"
+                onClick={exitLearner}
+                aria-label="Exit learner dashboard"
+              >
+                Exit
+              </button>
+            )}
           </div>
         </div>
+        {isPreviewMode && (
+          <div className="learner-preview-banner" role="status">
+            Preview mode is read-only. Progress and analytics are not recorded.
+            {previewLaunchedBy ? ` Opened by ${previewLaunchedBy}.` : ''}
+          </div>
+        )}
         <div className="learner-header-inner">
           <h1 className="learner-greeting">
             Hi, <em>{student.name.split(' ')[0]}</em>!
@@ -343,6 +400,11 @@ const LearnerDashboard: React.FC = () => {
         </aside>
 
         <div className="learner-main">
+        {previewNotice && (
+          <div className="learner-preview-notice" role="status">
+            {previewNotice}
+          </div>
+        )}
         <section className={`learner-section${activeSidebarSection !== 'lessons' ? ' learner-section--hidden' : ''}`}>
           <h2 className="learner-section-heading">My Lessons</h2>
           <p className="learner-section-sub">
@@ -368,7 +430,10 @@ const LearnerDashboard: React.FC = () => {
                     type="button"
                     key={lesson.id}
                     className={`lesson-card${complete ? ' lesson-card--complete' : ''}`}
-                    onClick={() => setActiveLessonModal(lesson)}
+                    onClick={() => {
+                      setPreviewNotice('');
+                      setActiveLessonModal(lesson);
+                    }}
                     aria-label={`Open lesson ${lesson.title}`}
                   >
                     {lesson.thumbnail_url ? (
@@ -406,12 +471,20 @@ const LearnerDashboard: React.FC = () => {
             <div className="learner-empty">
               <p>No games in the library yet. Your tutor will add games here soon.</p>
               <div className="learner-empty-actions">
-                <button type="button" className="btn btn-secondary btn-sm" onClick={switchLearner}>
-                  Switch Student
-                </button>
-                <button type="button" className="btn btn-secondary btn-sm" onClick={exitLearner}>
-                  Exit
-                </button>
+                {isPreviewMode ? (
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={switchLearner}>
+                    Back to Tutor
+                  </button>
+                ) : (
+                  <>
+                    <button type="button" className="btn btn-secondary btn-sm" onClick={switchLearner}>
+                      Switch Student
+                    </button>
+                    <button type="button" className="btn btn-secondary btn-sm" onClick={exitLearner}>
+                      Exit
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ) : (
@@ -449,7 +522,12 @@ const LearnerDashboard: React.FC = () => {
                     )}
                     <button
                       className="btn btn-primary game-tile__play"
-                      onClick={() => { setSelectedLesson(null); setSelectedStation(null); setSelectedGame(game); }}
+                      onClick={() => {
+                        setPreviewNotice('');
+                        setSelectedLesson(null);
+                        setSelectedStation(null);
+                        setSelectedGame(game);
+                      }}
                       aria-label={`Play ${game.title}`}
                     >
                       {gp ? 'Play Again' : 'Play'}
@@ -654,6 +732,7 @@ const LearnerDashboard: React.FC = () => {
                             className={`station-step${done ? ' station-step--done' : ''}`}
                             onClick={() => {
                               if (!game) return;
+                              setPreviewNotice('');
                               setActiveLessonModal(null);
                               setSelectedLesson(activeLessonModal.id);
                               setSelectedStation(num);

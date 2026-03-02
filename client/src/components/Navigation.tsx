@@ -92,6 +92,12 @@ const Navigation: React.FC = () => {
                 </span>
               )}
             </button>
+            <button onClick={() => handleViewSwitch('teacher')} className="nav-link">
+              View as Teacher
+            </button>
+            <button onClick={() => handleViewSwitch('parent')} className="nav-link">
+              View as Parent
+            </button>
             <button onClick={() => handleViewSwitch('tutor/feedback')} className="nav-link">
               Feedback Inbox
             </button>

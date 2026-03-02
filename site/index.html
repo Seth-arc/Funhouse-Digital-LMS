@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Funhouse Digital LMS</title>
+    <meta
+      name="description"
+      content="Game-based LMS for grades 4-9 digital literacy with a three-station lesson model."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="orb orb-a" aria-hidden="true"></div>
+    <div class="orb orb-b" aria-hidden="true"></div>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Grades 4-9 Digital Literacy Platform</p>
+        <h1>Funhouse Digital LMS</h1>
+        <p class="lead">
+          A game-based learning management system designed for rural classrooms, with progress tracking,
+          role-based dashboards, and a practical three-station lesson model.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#model">View Lesson Model</a>
+          <a class="btn btn-secondary" href="#quickstart">Quick Start</a>
+        </div>
+      </header>
+
+      <section class="preview panel" aria-label="Application Preview">
+        <img src="assets/screenshot.png" alt="Funhouse Digital LMS application screenshot" />
+      </section>
+
+      <section class="stats">
+        <article class="stat panel">
+          <span class="stat-value">4</span>
+          <span class="stat-label">User Roles</span>
+        </article>
+        <article class="stat panel">
+          <span class="stat-value">3</span>
+          <span class="stat-label">Learning Stations</span>
+        </article>
+        <article class="stat panel">
+          <span class="stat-value">15+</span>
+          <span class="stat-label">Seeded Games</span>
+        </article>
+      </section>
+
+      <section id="model" class="section">
+        <h2>Three-Station Lesson Model</h2>
+        <div class="cards">
+          <article class="card panel">
+            <p class="card-kicker">Station 1</p>
+            <h3>Computational Thinking</h3>
+            <p>Problem-solving skills, logic activities, and sequencing practice.</p>
+          </article>
+          <article class="card panel">
+            <p class="card-kicker">Station 2</p>
+            <h3>Typing</h3>
+            <p>Keyboard fluency with repeatable drills and measurable progress.</p>
+          </article>
+          <article class="card panel">
+            <p class="card-kicker">Station 3</p>
+            <h3>Purposeful Gaming</h3>
+            <p>Curriculum-aligned games that reinforce literacy and digital confidence.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="quickstart" class="section panel quickstart">
+        <h2>Quick Start</h2>
+        <p>Run these commands from the project root:</p>
+        <pre><code>npm run install-all
+npm run dev</code></pre>
+        <p>
+          This starts the backend on <code>http://localhost:5000</code> and the frontend on
+          <code>http://localhost:3000</code>.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

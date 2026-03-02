@@ -4,6 +4,16 @@ A comprehensive Learning Management System designed for digital literacy educati
 
 ![Application Screenshot](Screenshot.PNG)
 
+## GitHub Page
+
+This repo includes a static project page source in `site/` and an automated deploy workflow at `.github/workflows/deploy-pages.yml`.
+
+1. Push these changes to your GitHub repository.
+2. In GitHub, go to **Settings -> Pages** and set **Source** to **GitHub Actions**.
+3. The workflow deploys the page on pushes to `main` or `master`.
+4. Your site URL will be:
+   - `https://<your-github-username>.github.io/<repo-name>/`
+
 ## Features
 
 ### User Roles
